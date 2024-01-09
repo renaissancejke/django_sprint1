@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.http import Http404
 
 posts = [
     {
@@ -46,22 +46,18 @@ posts = [
 
 
 def index(request):
-    template = 'blog/index.html'
     context = {'posts': posts}
-    return render(request, template, context)
+    return render(request, 'blog/index.html', context)
 
 
 def post_detail(request, id):
-    template = 'blog/detail.html'
     post = [post for post in posts if post['id'] == id]
+    if not post:
+        raise Http404('Вы указали неверный id')
     context = {'post': post[0]}
-    return render(request, template, context)
+    return render(request, 'blog/detail.html', context)
 
 
 def category_posts(request, category_slug):
-    template = 'blog/category.html'
-    sort_posts = [post for post in posts if post['category']
-                  == category_slug]
-    context = {'category': category_slug,
-               'posts': sort_posts}
-    return render(request, template, context)
+    context = {'category': category_slug}
+    return render(request, 'blog/category.html', context)
