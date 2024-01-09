@@ -1,5 +1,6 @@
-from django.shortcuts import render
 from django.http import Http404
+
+from django.shortcuts import render
 
 posts = [
     {
@@ -50,11 +51,14 @@ def index(request):
     return render(request, 'blog/index.html', context)
 
 
+prepared_posts = {post['id']: post for post in posts}
+
+
 def post_detail(request, id):
-    post = [post for post in posts if post['id'] == id]
+    post = prepared_posts.get(id)
     if not post:
         raise Http404('Вы указали неверный id')
-    context = {'post': post[0]}
+    context = {'post': post}
     return render(request, 'blog/detail.html', context)
 
 
